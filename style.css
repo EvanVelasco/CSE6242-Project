@@ -86,6 +86,11 @@ p {
     margin-bottom: 10px;
 }
 
+.content {
+    margin: 10px;
+    padding: 10px;
+}
+
 .content-image {
     width: 90%;
     max-height: 75%;
