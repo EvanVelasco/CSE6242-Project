@@ -55,6 +55,9 @@ body {
     background-color: #f0f0f0;
     padding: 20px;
     overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .right-section {
@@ -95,4 +98,34 @@ p {
     width: 90%;
     max-height: 75%;
     object-fit: contain;
+}
+
+.content-video {
+    width: 90%;
+    max-height: 75vh;
+    display: block;
+    margin: 15px auto;
+    border-radius: 25px;
+    border: 2px solid #6E260E;
+    background-color: #000;
+    aspect-ratio: 16/9;
+    object-fit: contain;
+}
+
+.content-video::-webkit-media-controls-panel {
+    background-color: #6E260E;
+    border-radius: 25px;
+}
+
+.content-video::-webkit-media-controls-play-button,
+.content-video::-webkit-media-controls-timeline,
+.content-video::-webkit-media-controls-current-time-display,
+.content-video::-webkit-media-controls-time-remaining-display,
+.content-video::-webkit-media-controls-mute-button,
+.content-video::-webkit-media-controls-volume-slider-container,
+.content-video::-webkit-media-controls-volume-slider,
+.content-video::-webkit-media-controls-seek-back-button,
+.content-video::-webkit-media-controls-seek-forward-button,
+.content-video::-webkit-media-controls-fullscreen-button {
+    color: white;
 } 
