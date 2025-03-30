@@ -1,8 +1,9 @@
 //example derived from https://observablehq.com/@d3/bar-chart/2
 const data = [
-    { letter: 'A', frequency: 0.08167 },
-    { letter: 'B', frequency: 0.01492 },
-    { letter: 'C', frequency: 0.02782 },
+    { letter: 'A', frequency: 8 },
+    { letter: 'B', frequency: 2 },
+    { letter: 'C', frequency: 7 },
+    { letter: 'D', Frequency: 5 }
 ];
 
 const width = 200;
@@ -45,10 +46,3 @@ svg.append("g")
 svg.append("g")
     .attr("transform", `translate(${marginLeft},0)`)
     .call(d3.axisLeft(y).tickFormat((y) => (y * 100).toFixed()))
-    .call(g => g.select(".domain").remove())
-    .call(g => g.append("text")
-        .attr("x", -marginLeft)
-        .attr("y", 10)
-        .attr("fill", "currentColor")
-        .attr("text-anchor", "start")
-        .text("Frequency (%)"));
