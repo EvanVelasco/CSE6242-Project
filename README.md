@@ -19,6 +19,6 @@ CSE6242-Project/
 │   └── yolo_output_tracking_11n    # YOLO model output
 ├── data_viz/                       # Visualization scripts directory
 │   ├── container1.js               # Vehicle count visualization
-│   └── container2.js               # Vehicle trajectory visualization
+│   └── container2.js               # Vehicle count over time
 └── README.md                       # Project documentation
 ```

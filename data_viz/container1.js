@@ -1,8 +1,9 @@
 //example derived from https://observablehq.com/@d3/bar-chart/2
 const data = [
-    { letter: 'A', frequency: 0.08167 },
-    { letter: 'B', frequency: 0.01492 },
-    { letter: 'C', frequency: 0.02782 },
+    { letter: 'A', frequency: 8 },
+    { letter: 'B', frequency: 2 },
+    { letter: 'C', frequency: 7 },
+    { letter: 'D', Frequency: 5 }
 ];
 
 const width = 200;
@@ -51,4 +52,4 @@ svg.append("g")
         .attr("y", 10)
         .attr("fill", "currentColor")
         .attr("text-anchor", "start")
-        .text("Frequency (%)"));
+        .text("Number of Vehicles"));
