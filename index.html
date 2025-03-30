@@ -20,23 +20,28 @@
         
         <!-- left section -->
         <div class="left-container">
-            <h2>Video Goes Here</h2>
-            <img class="content-image" src="https://user-images.githubusercontent.com/72157067/156183111-cb0f09bb-cfe1-490f-bccc-335748111107.jpg">
-            <p>Source: https://user-images.githubusercontent.com/72157067/156183111-cb0f09bb-cfe1-490f-bccc-335748111107.jpg</p>
+            <h2>Video</h2>
+            <video class="content-video" controls="controls" preload="auto" playsinline>
+                <source src="content/yolo_output_11n_h264.mp4" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
         </div>
         
         <!-- right section -->
         <div class="right-section">
             <!-- right container 1 -->
-            <div class="right-container right-container-1" id="container1" >
-                <h2>Chart 1</h2>
-                <p>example chart</p>
-                <script src="container1.js"></script>
+            <div class="right-container right-container-1" id="container1">
+                <h2>Bar Chart</h2>
+                <p>Count of detected vehicles by class</p>
+                <div class="chart-container"></div>
+                <script src="data_viz/container1.js"></script>
             </div>
             <!-- right container 2 -->
-            <div class="right-container right-container-2">
-                <h2>Chart 2</h2>
-                <p>Chart showing traffic density over time?</p>
+            <div class="right-container right-container-2" id="container2">
+                <h2>Line Chart</h2>
+                <p>Count of detected vehicles by class over time</p>
+                <div class="chart-container"></div>
+                <script src="data_viz/container2.js"></script>
             </div>
         </div>
     </div>
