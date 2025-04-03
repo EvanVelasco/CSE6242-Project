@@ -22,16 +22,33 @@ function createVisualization() {
     .style('margin', 'auto');
 
   // Add frame counter display
-  const frameDisplay = d3.select('#container2')
+  const frameDisplay = d3.select('body')
     .append('div')
     .style('position', 'absolute')
-    .style('top', '10px')
-    .style('left', '10px')
-    .style('background', 'rgba(255, 255, 255, 0.8)')
-    .style('padding', '5px')
+    .style('background', 'rgba(0, 0, 0, 0.7)')
+    .style('color', 'white')
+    .style('padding', '5px 10px')
     .style('border-radius', '3px')
     .style('font-family', 'monospace')
+    .style('font-size', '14px')
+    .style('pointer-events', 'none')  // Allow clicking through the counter
     .text('Frame: 0');
+
+  // Position the frame counter relative to video
+  function updateFramePosition() {
+    const video = document.querySelector('.content-video');
+    if (video) {
+      const rect = video.getBoundingClientRect();
+      frameDisplay
+        .style('top', `${rect.top + 10}px`)
+        .style('left', `${rect.right - 130}px`);
+    }
+  }
+
+  // Update position on window resize
+  window.addEventListener('resize', updateFramePosition);
+  // Initial position
+  updateFramePosition();
     
   // Add loading indicator
   const loading = svg.append('text')
@@ -72,19 +89,33 @@ function createVisualization() {
         .curve(d3.curveMonotoneX)
         .x(d => xScale(d.frame))
         .y(d => yScale(d.count));
+
+      // Create a clip path that will reveal the line
+      const clipPath = svg.append('defs')
+        .append('clipPath')
+        .attr('id', 'clip-path');
+
+      clipPath.append('rect')
+        .attr('x', margin.left)
+        .attr('y', margin.top)
+        .attr('width', 0)
+        .attr('height', height - margin.top - margin.bottom);
       
-      // Add the line path
+      // Add the line path with clip path
       svg.append('path')
         .datum(processedData)
         .attr('fill', 'none')
         .attr('stroke', 'steelblue')
         .attr('stroke-width', 3)
-        .attr('d', line);
+        .attr('d', line)
+        .attr('clip-path', 'url(#clip-path)');
 
       // Add frame indicator dot
       const frameIndicator = svg.append('circle')
-        .attr('fill', 'red')
-        .attr('r', 5)
+        .attr('fill', 'none')  // Transparent fill for the center
+        .attr('stroke', 'red')  // Red outline
+        .attr('stroke-width', 2)  // Thickness of the donut
+        .attr('r', 6)  // Slightly larger radius to account for stroke
         .style('opacity', 0)
         .style('transition', 'opacity 0.2s ease');
 
@@ -106,7 +137,9 @@ function createVisualization() {
       const yAxis = svg.append('g')
         .attr('transform', `translate(${margin.left},0)`)
         .call(d3.axisLeft(yScale)
-          .ticks(height > 300 ? 8 : 5));
+          .ticks(height > 300 ? 8 : 5)
+          .tickFormat(d3.format('d'))
+          .tickValues(d3.range(0, Math.ceil(d3.max(processedData, d => d.count)) + 1)));
           
       yAxis.append('text')
         .attr('transform', 'rotate(-90)')
@@ -151,6 +184,10 @@ function createVisualization() {
           }
           
           if (xPos >= margin.left && xPos <= width - margin.right) {
+            // Update clip path width to reveal line up to current position
+            clipPath.select('rect')
+              .attr('width', xPos - margin.left);
+            
             frameIndicator
               .style('opacity', 1)
               .attr('transform', `translate(${xPos},${yPos})`);
@@ -225,6 +262,7 @@ function cleanup() {
     cancelAnimationFrame(animationFrameId);
   }
   window.removeEventListener('resize', createVisualization);
+  window.removeEventListener('resize', updateFramePosition);
   d3.select('#container2 svg').remove();
-  d3.select('#container2 div').remove();
+  frameDisplay.remove();
 }
