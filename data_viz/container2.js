@@ -1,4 +1,5 @@
-// Create the visualization with frame counter
+(function(){
+  // Create the visualization with frame counter
 function createVisualization() {
   // Clear any existing SVG
   d3.select('#container2 svg').remove();
@@ -266,3 +267,5 @@ function cleanup() {
   d3.select('#container2 svg').remove();
   frameDisplay.remove();
 }
+
+})();
