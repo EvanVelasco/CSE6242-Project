@@ -52,7 +52,7 @@ function createVisualization() {
     const containerWidth = container.clientWidth;
     const containerHeight = container.clientHeight;
 
-    const margin = { top: 50, right: 50, bottom: 140, left: 50 };
+    const margin = { top: 50, right: 50, bottom: 150, left: 50 };
     const width = Math.max(300, Math.min(containerWidth - 40, 800));
     const height = Math.max(300, Math.min(containerHeight - 40, 500));
 
@@ -91,7 +91,7 @@ function createVisualization() {
 
         const yScale = d3.scaleLinear()
             .domain([0, maxY])
-            .range([height - margin.bottom, margin.top]);
+            .range([height - margin.bottom - 150, margin.top]);
 
         // Create axes
         const xAxis = d3.axisBottom(xScale);
@@ -99,13 +99,13 @@ function createVisualization() {
 
         // Append axes to the SVG
         svg.append('g')
-            .attr('transform', `translate(0,${height - margin.bottom})`)
+            .attr('transform', `translate(0,${height - margin.bottom - 150})`)
             .call(xAxis)
             .selectAll('text')
             .attr('transform', 'rotate(-45)')
             .style('text-anchor', 'end')
-            .attr('dx', '-0.9em')
-            .attr('dy', '0.2em');
+            .attr('dx', '-0.5em')
+            .attr('dy', '0.7em');
 
         svg.append('g')
             .attr('transform', `translate(${margin.left},0)`)
@@ -118,9 +118,9 @@ function createVisualization() {
             .append('rect')
             .attr('class', 'bar')
             .attr('x', d => xScale(d))
-            .attr('y', d => yScale(0))
+            .attr('y', height - margin.bottom - 150)  // Position at x-axis
             .attr('width', xScale.bandwidth())
-            .attr('height', d => height - margin.bottom - yScale(0))
+            .attr('height', 0)
             .attr('fill', 'steelblue');
 
         // Get video element and add timeupdate listener
@@ -135,8 +135,10 @@ function createVisualization() {
 
             svg.selectAll('.bar')
                 .data(classes)
+                .transition()
+                .duration(40)  // Short duration to keep up with video frame rate
                 .attr('y', d => yScale(frameData.classes[d]))
-                .attr('height', d => height - margin.bottom - yScale(frameData.classes[d]));
+                .attr('height', d => (height - margin.bottom - 150) - yScale(frameData.classes[d]));
 
             animationFrameId = requestAnimationFrame(updateFrame);
         }
