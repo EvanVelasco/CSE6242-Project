@@ -6,6 +6,7 @@
     <title>Traffic Detection</title>
     <link rel="stylesheet" href="style.css">
     <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="utils/video-selector.js"></script>
 </head>
 
 <body>
@@ -20,11 +21,24 @@
         
         <!-- left section -->
         <div class="left-container">
-            <h2>Video</h2>
-            <video class="content-video" controls="controls" preload="auto" playsinline>
-                <source src="content/yolo_output_11n_h264.mp4" type="video/mp4">
-                Your browser does not support the video tag.
-            </video>
+            <div class="video-sidebar">
+                <h3>Select Video</h3>
+                <ul class="video-list">
+                    <li class="video-item acive" data-video="content/videos/yolo_output_11m_ver2.mp4">Version 2</li>
+                    <li class="video-item" data-video="content/videos/yolo_output_11n_h264.mp4">Video 1</li>
+                    <li class="video-item" data-video="content/videos/yolo_output_11n_h264 copy.mp4">Video 2</li>
+                    <li class="video-item" data-video="content/videos/yolo_output_11n_h264 copy 2.mp4">Video 3</li>
+                    <li class="video-item" data-video="content/videos/yolo_output_11n_h264 copy 3.mp4">Video 4</li>
+                    <li class="video-item" data-video="content/videos/yolo_output_11n_h264 copy 4.mp4">Video 5</li>                    
+                </ul>
+            </div>
+            <div class="video-container">
+                <h2>Video</h2>
+                <video class="content-video" controls="controls" preload="auto" playsinline>
+                    <source src="content/videos/yolo_output_11m_ver2.mp4" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+            </div>
         </div>
         
         <!-- right section -->
@@ -38,7 +52,7 @@
             </div>
             <!-- right container 2 -->
             <div class="right-container right-container-2" id="container2">
-                <h2>Count of detected vehicles by class over time</h2>
+                <h2>Count of detected vehicles by video frame</h2>
                 <p>Line Chart</p>
                 <div class="chart-container"></div>
                 <script src="data_viz/container2.js"></script>
