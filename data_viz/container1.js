@@ -1,6 +1,6 @@
 (function(){
     function loadData() {
-    return d3.json('content/yolo_output_tracking_11m_ver2.json')
+    return d3.json('content/data/yolo_output_tracking_11m_ver2.json')
         .then(data => {
             function accumulateIds(data) {
                 const seenClasses = {};
