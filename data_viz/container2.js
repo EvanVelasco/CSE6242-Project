@@ -59,7 +59,7 @@ function createVisualization() {
     .text('Loading data...');
 
   // Load and process data
-  d3.json('content/yolo_output_tracking_11n.json')
+  d3.json('content/yolo_output_tracking_11m_ver2.json')
     .then(data => {
       loading.remove();
       
@@ -106,7 +106,7 @@ function createVisualization() {
       svg.append('path')
         .datum(processedData)
         .attr('fill', 'none')
-        .attr('stroke', 'steelblue')
+        .attr('stroke', '#6E260E')
         .attr('stroke-width', 3)
         .attr('d', line)
         .attr('clip-path', 'url(#clip-path)');
@@ -114,7 +114,7 @@ function createVisualization() {
       // Add frame indicator dot
       const frameIndicator = svg.append('circle')
         .attr('fill', 'none')  // Transparent fill for the center
-        .attr('stroke', 'red')  // Red outline
+        .attr('stroke', 'steelblue')  // Red outline
         .attr('stroke-width', 2)  // Thickness of the donut
         .attr('r', 6)  // Slightly larger radius to account for stroke
         .style('opacity', 0)
@@ -135,21 +135,23 @@ function createVisualization() {
         .attr('text-anchor', 'middle')
         .text('Frame Number');
         
-      const yAxis = svg.append('g')
+      const yAxisLine = svg.append('g')
         .attr('transform', `translate(${margin.left},0)`)
         .call(d3.axisLeft(yScale)
           .ticks(height > 300 ? 8 : 5)
           .tickFormat(d3.format('d'))
           .tickValues(d3.range(0, Math.ceil(d3.max(processedData, d => d.count)) + 1)));
+
           
-      yAxis.append('text')
+          
+      yAxisLine.append('text')
         .attr('transform', 'rotate(-90)')
         .attr('y', -35)
         .attr('x', -(height - margin.bottom + margin.top) / 2)
         .attr('fill', 'black')
         .attr('font-size', '14px')
         .attr('text-anchor', 'middle')
-        .text('Count of Detected Objects');
+        .text('Count');
 
       // Get video element and add timeupdate listener
       const video = document.querySelector('video');

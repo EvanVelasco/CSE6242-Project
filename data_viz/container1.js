@@ -1,6 +1,6 @@
 (function(){
     function loadData() {
-    return d3.json('content/yolo_output_tracking_11n.json')
+    return d3.json('content/yolo_output_tracking_11m_ver2.json')
         .then(data => {
             function accumulateIds(data) {
                 const seenClasses = {};
@@ -91,15 +91,17 @@ function createVisualization() {
 
         const yScale = d3.scaleLinear()
             .domain([0, maxY])
-            .range([height - margin.bottom - 150, margin.top]);
+            .range([height - margin.bottom - 125, margin.top]);
 
         // Create axes
         const xAxis = d3.axisBottom(xScale);
-        const yAxis = d3.axisLeft(yScale);
+        const yAxis = d3.axisLeft(yScale)
+            .tickValues(d3.range(0, maxY + 1, 5))  // Show ticks every 2 units
+            .tickFormat(d3.format('d'));  // Format as integers
 
         // Append axes to the SVG
         svg.append('g')
-            .attr('transform', `translate(0,${height - margin.bottom - 150})`)
+            .attr('transform', `translate(0,${height - margin.bottom - 125})`)
             .call(xAxis)
             .selectAll('text')
             .attr('transform', 'rotate(-45)')
@@ -111,6 +113,17 @@ function createVisualization() {
             .attr('transform', `translate(${margin.left},0)`)
             .call(yAxis);
 
+        // Add y-axis label
+        svg.append('text')
+            .attr('transform', 'rotate(-90)')
+            .attr('y', margin.left - 35)
+            .attr('x', -(height/2) + 120)
+            .attr('text-anchor', 'middle')
+            .attr('font-size', '14px')
+            .text('Count');
+
+        
+
         // Create bars
         svg.selectAll('.bar')
             .data(classes)
@@ -118,10 +131,10 @@ function createVisualization() {
             .append('rect')
             .attr('class', 'bar')
             .attr('x', d => xScale(d))
-            .attr('y', height - margin.bottom - 150)  // Position at x-axis
+            .attr('y', height - margin.bottom - 125)  // Position at x-axis
             .attr('width', xScale.bandwidth())
             .attr('height', 0)
-            .attr('fill', 'steelblue');
+            .attr('fill', '#6E260E');
 
         // Get video element and add timeupdate listener
         const video = document.querySelector('video');
@@ -138,7 +151,7 @@ function createVisualization() {
                 .transition()
                 .duration(40)  // Short duration to keep up with video frame rate
                 .attr('y', d => yScale(frameData.classes[d]))
-                .attr('height', d => (height - margin.bottom - 150) - yScale(frameData.classes[d]));
+                .attr('height', d => (height - margin.bottom - 125) - yScale(frameData.classes[d]));
 
             animationFrameId = requestAnimationFrame(updateFrame);
         }

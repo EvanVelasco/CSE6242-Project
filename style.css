@@ -123,11 +123,13 @@ body {
 }
 
 .right-container-1 {
-    background-color: #e8f4f8;
+    /* background-color: #e8f4f8; */
+    background-color: #f5f5f5;
 }
 
 .right-container-2 {
-    background-color: #e8f8e8;
+    /* --background-color: #e8f8e8; */
+    background-color: #f5f5f5;
 }
 
 h2 {
