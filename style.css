@@ -184,15 +184,24 @@ p {
     height: 100%;
 }
 
-.bounding-box-overlay {
+#bounding-box-wrapper {
     position: absolute;
     top: 0;
     left: 0;
-    pointer-events: none !important;
+    right: 0;
+    bottom: 0;
     z-index: 10;
+    /* Allow clicks through to video except when clicking on the wrapper itself */
+    pointer-events: auto;
 }
 
-.bounding-box-overlay * {
+#bounding-box-overlay {
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
+#bounding-box-overlay * {
     pointer-events: none !important;
 }
 

@@ -17,30 +17,83 @@ async function initializeBoundingBoxes(videoContainer) {
         boundingBoxData = await response.json();
 
         // Remove existing SVG if any
-        d3.select(videoContainer).select('.bounding-box-overlay').remove();
+        d3.select('#bounding-box-overlay').remove();
 
         // Get video element dimensions
         const videoElement = videoContainer.querySelector('.content-video');
-        const videoRect = videoElement.getBoundingClientRect();
-
-        // Create SVG overlay with the same dimensions as the video
-        svg = d3.select(videoContainer)
+        
+        // Create a wrapper div that will handle clicks
+        const overlayWrapper = document.createElement('div');
+        overlayWrapper.id = 'bounding-box-wrapper';
+        overlayWrapper.style.position = 'absolute';
+        overlayWrapper.style.top = '0';
+        overlayWrapper.style.left = '0';
+        overlayWrapper.style.right = '0';
+        overlayWrapper.style.bottom = '0';
+        overlayWrapper.style.zIndex = '10';
+        
+        // Add the wrapper to the video container
+        videoContainer.style.position = 'relative';
+        videoContainer.appendChild(overlayWrapper);
+        
+        // Add click handler to the wrapper
+        overlayWrapper.addEventListener('click', function(e) {
+            // Forward clicks to video
+            if (videoElement) {
+                if (videoElement.paused) {
+                    videoElement.play();
+                } else {
+                    videoElement.pause();
+                }
+            }
+            e.stopPropagation();
+        });
+        
+        // Create SVG inside wrapper
+        svg = d3.select(overlayWrapper)
             .append('svg')
-            .attr('class', 'bounding-box-overlay')
-            .style('position', 'absolute')
-            .style('top', `${videoRect.top - videoContainer.getBoundingClientRect().top}px`)
-            .style('left', `${videoRect.left - videoContainer.getBoundingClientRect().left}px`)
-            .style('width', `${videoRect.width}px`)
-            .style('height', `${videoRect.height}px`);
+            .attr('id', 'bounding-box-overlay')
+            .attr('width', '100%')
+            .attr('height', '100%')
+            .style('pointer-events', 'none');
 
         // Add a group for the bounding boxes
         svg.append('g')
-            .attr('class', 'bounding-boxes');
+            .attr('class', 'bounding-boxes')
+            .style('pointer-events', 'none');
 
-        // Add class color legend
+        // Get the video's dimensions for letterboxing calculation
+        const videoWidth = videoElement.videoWidth;
+        const videoHeight = videoElement.videoHeight;
+        const videoAspectRatio = videoWidth / videoHeight;
+        
+        // Calculate positions
+        const videoRect = videoElement.getBoundingClientRect();
+        const wrapperRect = overlayWrapper.getBoundingClientRect();
+        const containerAspectRatio = videoRect.width / videoRect.height;
+        
+        // Calculate offsets for letterboxing
+        let offsetX, offsetY;
+        
+        if (videoAspectRatio > containerAspectRatio) {
+            // Video is wider - black bars on top/bottom
+            offsetX = 0;
+            offsetY = (videoRect.height - (videoRect.width / videoAspectRatio)) / 2;
+        } else {
+            // Video is taller - black bars on sides
+            offsetY = 0;
+            offsetX = (videoRect.width - (videoRect.height * videoAspectRatio)) / 2;
+        }
+        
+        // Calculate relative position with letterboxing offset
+        const relativeLeft = videoRect.left - wrapperRect.left + offsetX;
+        const relativeTop = videoRect.top - wrapperRect.top + offsetY;
+
+        // Add class color legend positioned relative to the video
         const legend = svg.append('g')
             .attr('class', 'legend')
-            .attr('transform', 'translate(15, 25)');
+            .attr('transform', `translate(${relativeLeft + 15}, ${relativeTop + 25})`)
+            .style('pointer-events', 'none');
 
         // Get unique classes from the data
         const uniqueClasses = [...new Set(boundingBoxData.map(d => d.class))];
@@ -48,13 +101,15 @@ async function initializeBoundingBoxes(videoContainer) {
         // Create legend items
         uniqueClasses.forEach((className, i) => {
             const legendItem = legend.append('g')
-                .attr('transform', `translate(0, ${i * 20})`);
+                .attr('transform', `translate(0, ${i * 20})`)
+                .style('pointer-events', 'none');
 
             // Add colored rectangle
             legendItem.append('rect')
                 .attr('width', 15)
                 .attr('height', 15)
-                .attr('fill', classColors[className] || '#808080');
+                .attr('fill', classColors[className] || '#808080')
+                .style('pointer-events', 'none');
 
             // Add class name
             legendItem.append('text')
@@ -63,26 +118,71 @@ async function initializeBoundingBoxes(videoContainer) {
                 .style('font-size', '14px')
                 .style('fill', 'white')
                 .style('text-shadow', '1px 1px 1px rgba(0, 0, 0, 0.7)')
-                .text(className);
+                .text(className)
+                .style('pointer-events', 'none');
         });
 
-        // Add resize observer to update SVG position and size when video dimensions change
+        // Add resize observer to reposition elements when video size changes
         const resizeObserver = new ResizeObserver(() => {
+            // Recalculate positions with letterboxing
             const newVideoRect = videoElement.getBoundingClientRect();
-            const containerRect = videoContainer.getBoundingClientRect();
+            const newWrapperRect = overlayWrapper.getBoundingClientRect();
+            const newContainerAspectRatio = newVideoRect.width / newVideoRect.height;
             
-            svg.style('top', `${newVideoRect.top - containerRect.top}px`)
-               .style('left', `${newVideoRect.left - containerRect.left}px`)
-               .style('width', `${newVideoRect.width}px`)
-               .style('height', `${newVideoRect.height}px`);
-
+            let newOffsetX, newOffsetY;
+            
+            if (videoAspectRatio > newContainerAspectRatio) {
+                // Video is wider - black bars on top/bottom
+                newOffsetX = 0;
+                newOffsetY = (newVideoRect.height - (newVideoRect.width / videoAspectRatio)) / 2;
+            } else {
+                // Video is taller - black bars on sides
+                newOffsetY = 0;
+                newOffsetX = (newVideoRect.width - (newVideoRect.height * videoAspectRatio)) / 2;
+            }
+            
+            const newRelativeLeft = newVideoRect.left - newWrapperRect.left + newOffsetX;
+            const newRelativeTop = newVideoRect.top - newWrapperRect.top + newOffsetY;
+            
+            legend.attr('transform', `translate(${newRelativeLeft + 15}, ${newRelativeTop + 25})`);
+            
             // Update boxes if we have a current frame
             if (currentFrame !== undefined) {
                 updateBoundingBoxes(currentFrame);
             }
         });
-
+        
         resizeObserver.observe(videoElement);
+        resizeObserver.observe(window.document.body);
+
+        // Also update on window resize
+        window.addEventListener('resize', () => {
+            // Recalculate positions with letterboxing
+            const newVideoRect = videoElement.getBoundingClientRect();
+            const newWrapperRect = overlayWrapper.getBoundingClientRect();
+            const newContainerAspectRatio = newVideoRect.width / newVideoRect.height;
+            
+            let newOffsetX, newOffsetY;
+            
+            if (videoAspectRatio > newContainerAspectRatio) {
+                // Video is wider - black bars on top/bottom
+                newOffsetX = 0;
+                newOffsetY = (newVideoRect.height - (newVideoRect.width / videoAspectRatio)) / 2;
+            } else {
+                // Video is taller - black bars on sides
+                newOffsetY = 0;
+                newOffsetX = (newVideoRect.width - (newVideoRect.height * videoAspectRatio)) / 2;
+            }
+            
+            const newRelativeLeft = newVideoRect.left - newWrapperRect.left + newOffsetX;
+            const newRelativeTop = newVideoRect.top - newWrapperRect.top + newOffsetY;
+            
+            legend.attr('transform', `translate(${newRelativeLeft + 15}, ${newRelativeTop + 25})`);
+            
+            if (currentFrame !== undefined) {
+                updateBoundingBoxes(currentFrame);
+            }
+        });
 
     } catch (error) {
         console.error('Error initializing bounding boxes:', error);
@@ -95,27 +195,42 @@ function updateBoundingBoxes(frameNumber) {
     currentFrame = frameNumber;
     const frameData = boundingBoxData.filter(d => d.frame === frameNumber);
     
-    // Get video dimensions for scaling
-    const videoElement = svg.node().parentNode.querySelector('.content-video');
-    const videoRect = videoElement.getBoundingClientRect();
+    // Get video element
+    const videoElement = document.querySelector('.content-video');
+    if (!videoElement) return;
     
     // Get the actual video dimensions
     const videoWidth = videoElement.videoWidth;
     const videoHeight = videoElement.videoHeight;
+    const videoAspectRatio = videoWidth / videoHeight;
     
-    // Calculate scaling factors
-    const scale = Math.min(
-        videoRect.width / videoWidth,
-        videoRect.height / videoHeight
-    );
+    // Get the video element's displayed dimensions and position
+    const videoRect = videoElement.getBoundingClientRect();
+    const wrapperRect = svg.node().getBoundingClientRect();
     
-    // Calculate the actual dimensions of the video display area
-    const actualWidth = videoWidth * scale;
-    const actualHeight = videoHeight * scale;
+    // Calculate the actual displayed video dimensions accounting for letterboxing
+    // First, determine if we have vertical or horizontal letterboxing
+    const containerAspectRatio = videoRect.width / videoRect.height;
     
-    // Calculate offsets to center the video
-    const xOffset = (videoRect.width - actualWidth) / 2;
-    const yOffset = (videoRect.height - actualHeight) / 2;
+    let displayedWidth, displayedHeight, offsetX, offsetY;
+    
+    if (videoAspectRatio > containerAspectRatio) {
+        // Video is wider than container - will have black bars on top and bottom
+        displayedWidth = videoRect.width;
+        displayedHeight = displayedWidth / videoAspectRatio;
+        offsetX = 0;
+        offsetY = (videoRect.height - displayedHeight) / 2;
+    } else {
+        // Video is taller than container - will have black bars on sides
+        displayedHeight = videoRect.height;
+        displayedWidth = displayedHeight * videoAspectRatio;
+        offsetX = (videoRect.width - displayedWidth) / 2;
+        offsetY = 0;
+    }
+    
+    // Calculate relative position of video within the wrapper
+    const relativeLeft = videoRect.left - wrapperRect.left + offsetX;
+    const relativeTop = videoRect.top - wrapperRect.top + offsetY;
     
     // Select all existing boxes and bind new data
     const boxes = svg.select('.bounding-boxes')
@@ -129,15 +244,16 @@ function updateBoundingBoxes(frameNumber) {
     boxes.enter()
         .append('rect')
         .merge(boxes)
-        .attr('x', d => xOffset + (d.bbox[0] / videoWidth) * actualWidth)
-        .attr('y', d => yOffset + (d.bbox[1] / videoHeight) * actualHeight)
-        .attr('width', d => ((d.bbox[2] - d.bbox[0]) / videoWidth) * actualWidth)
-        .attr('height', d => ((d.bbox[3] - d.bbox[1]) / videoHeight) * actualHeight)
+        .attr('x', d => relativeLeft + (d.bbox[0] / videoWidth) * displayedWidth)
+        .attr('y', d => relativeTop + (d.bbox[1] / videoHeight) * displayedHeight)
+        .attr('width', d => ((d.bbox[2] - d.bbox[0]) / videoWidth) * displayedWidth)
+        .attr('height', d => ((d.bbox[3] - d.bbox[1]) / videoHeight) * displayedHeight)
         .attr('class', 'bounding-box')
         .style('fill', 'none')
         .style('stroke', d => classColors[d.class] || '#808080')
         .style('stroke-width', '2px')
-        .style('opacity', d => Math.min(1, d.confidence + 0.3));
+        .style('opacity', d => Math.min(1, d.confidence + 0.3))
+        .style('pointer-events', 'none');
 
     // Update labels
     const labels = svg.select('.bounding-boxes')
@@ -149,24 +265,15 @@ function updateBoundingBoxes(frameNumber) {
     labels.enter()
         .append('text')
         .merge(labels)
-        .attr('x', d => xOffset + (d.bbox[0] / videoWidth) * actualWidth)
-        .attr('y', d => yOffset + (d.bbox[1] / videoHeight) * actualHeight - 5)
+        .attr('x', d => relativeLeft + (d.bbox[0] / videoWidth) * displayedWidth)
+        .attr('y', d => relativeTop + (d.bbox[1] / videoHeight) * displayedHeight - 5)
         .text(d => `${d.class} ${d.id} (${Math.round(d.confidence * 100)}%)`)
         .attr('class', 'bounding-box-label')
         .style('fill', d => classColors[d.class] || '#808080')
-        .style('font-size', '18px')
-        .style('font-weight', 'bold');
+        .style('font-size', '12px')
+        .style('font-weight', 'bold')
+        .style('pointer-events', 'none');
 }
-
-// Function to handle window resize
-function handleResize() {
-    if (svg) {
-        updateBoundingBoxes(currentFrame);
-    }
-}
-
-// Add resize listener
-window.addEventListener('resize', handleResize);
 
 // Export functions
 export { initializeBoundingBoxes, updateBoundingBoxes };
