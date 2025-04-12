@@ -52,7 +52,7 @@ function createVisualization() {
     const containerWidth = container.clientWidth;
     const containerHeight = container.clientHeight;
 
-    const margin = { top: 50, right: 50, bottom: 150, left: 50 };
+    const margin = { top: 40, right: 50, bottom: 150, left: 50 };
     const width = Math.max(300, Math.min(containerWidth - 40, 800));
     const height = Math.max(300, Math.min(containerHeight - 40, 500));
 
