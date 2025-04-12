@@ -91,7 +91,7 @@ function createVisualization() {
 
         const yScale = d3.scaleLinear()
             .domain([0, maxY])
-            .range([height - margin.bottom - 125, margin.top]);
+            .range([height - margin.bottom - 100, margin.top]);
 
         // Create axes
         const xAxis = d3.axisBottom(xScale);
@@ -101,7 +101,7 @@ function createVisualization() {
 
         // Append axes to the SVG
         svg.append('g')
-            .attr('transform', `translate(0,${height - margin.bottom - 125})`)
+            .attr('transform', `translate(0,${height - margin.bottom - 100})`)
             .call(xAxis)
             .selectAll('text')
             .attr('transform', 'rotate(-45)')
@@ -131,7 +131,7 @@ function createVisualization() {
             .append('rect')
             .attr('class', 'bar')
             .attr('x', d => xScale(d))
-            .attr('y', height - margin.bottom - 125)  // Position at x-axis
+            .attr('y', height - margin.bottom - 100)  // Position at x-axis
             .attr('width', xScale.bandwidth())
             .attr('height', 0)
             .attr('fill', '#6E260E');
@@ -151,7 +151,7 @@ function createVisualization() {
                 .transition()
                 .duration(40)  // Short duration to keep up with video frame rate
                 .attr('y', d => yScale(frameData.classes[d]))
-                .attr('height', d => (height - margin.bottom - 125) - yScale(frameData.classes[d]));
+                .attr('height', d => (height - margin.bottom - 100) - yScale(frameData.classes[d]));
 
             animationFrameId = requestAnimationFrame(updateFrame);
         }
