@@ -3,6 +3,15 @@ document.addEventListener('DOMContentLoaded', function() {
     const videoElement = document.querySelector('.content-video');
     const videoSource = videoElement.querySelector('source');
 
+    // Show default video selection
+    videoItems.forEach(item => {
+        if (item.getAttribute('data-video') === 'content/videos/yolo_output_11m_ver2.mp4') {
+            item.classList.add('active');
+        } else {
+            item.classList.remove('active');
+        }
+    });
+
     videoItems.forEach(item => {
         item.addEventListener('click', function() {
             // Update active state
