@@ -1,134 +1,106 @@
 (function(){
-    function loadData() {
-    return d3.json('content/data/data_1.json')
-        .then(data => {
-            function accumulateIds(data) {
-                const seenClasses = {};
-                const result = [];
-                
-                const allClasses = new Set(data.map(entry => entry.class));
-                const maxFrame = Math.max(...data.map(entry => entry.frame));
-                
-                for (let frame = 0; frame <= maxFrame; frame++) {
-                    const frameResult = { frame: frame, classes: {} };
+    // Define colors for each class (matching bounding-box.js)
+    const classColors = {
+        'car': '#2196F3',    // blue
+        'truck': '#4CAF50',  // green
+        'bus': '#FFC107',    // yellow
+    };
+
+    let currentData = null;
+
+    function loadData(dataFile) {
+        return d3.json(dataFile)
+            .then(data => {
+                function accumulateIds(data) {
+                    const seenClasses = {};
+                    const result = [];
                     
-                    allClasses.forEach(cls => {
-                        frameResult.classes[cls] = seenClasses[cls] ? seenClasses[cls].size : 0;
+                    const allClasses = new Set(data.map(entry => entry.class));
+                    const maxFrame = Math.max(...data.map(entry => entry.frame));
+                    
+                    for (let frame = 0; frame <= maxFrame; frame++) {
+                        const frameResult = { frame: frame, classes: {} };
+                        
+                        allClasses.forEach(cls => {
+                            frameResult.classes[cls] = seenClasses[cls] ? seenClasses[cls].size : 0;
+                        });
+                        
+                        result.push(frameResult);
+                    }
+                    
+                    data.forEach(entry => {
+                        const frame = entry.frame;
+                        const className = entry.class;
+                        const id = entry.id;
+                        
+                        if (!seenClasses[className]) {
+                            seenClasses[className] = new Set();
+                        }
+                        
+                        seenClasses[className].add(id);
+                        
+                        for (let i = frame; i <= maxFrame; i++) {
+                            result[i].classes[className] = seenClasses[className].size;
+                        }
                     });
                     
-                    result.push(frameResult);
+                    return result;
                 }
                 
-                data.forEach(entry => {
-                    const frame = entry.frame;
-                    const className = entry.class;
-                    const id = entry.id;
-                    
-                    if (!seenClasses[className]) {
-                        seenClasses[className] = new Set();
-                    }
-                    
-                    seenClasses[className].add(id);
-                    
-                    for (let i = frame; i <= maxFrame; i++) {
-                        result[i].classes[className] = seenClasses[className].size;
-                    }
-                });
-                
-                return result;
-            }
+                currentData = accumulateIds(data);
+                return currentData;
+            })
+            .catch(error => {
+                console.error('Error loading or processing data:', error);
+                currentData = null;
+            });
+    }
+
+    function createVisualization() {
+        d3.select('#container1 svg').remove();
+        
+        const container = document.getElementById('container1');
+        const containerWidth = container.clientWidth;
+        const containerHeight = container.clientHeight;
+        
+        const margin = {top: 40, right: 50, bottom: 80, left: 50};
+        const width = Math.max(300, Math.min(containerWidth - 40, 800));
+        const height = Math.max(300, Math.min(containerHeight - 40, 500));
+        
+        const svg = d3.select('#container1')
+            .append('svg')
+            .attr('width', width)
+            .attr('height', height)
+            .style('display', 'block')
+            .style('margin', 'auto');
             
-            return accumulateIds(data);
-        })
-        .catch(error => {
-            console.error('Error loading or processing data:', error);
-        });
-}
+        const loading = svg.append('text')
+            .attr('x', width / 2)
+            .attr('y', height / 2)
+            .attr('text-anchor', 'middle')
+            .text('Loading data...');
 
-function createVisualization() {
-    d3.select('#container1 svg').remove();
+        if (!currentData) {
+            loading.text('No data available');
+            return;
+        }
 
-    const container = document.getElementById('container1');
-    const containerWidth = container.clientWidth;
-    const containerHeight = container.clientHeight;
-
-    const margin = { top: 40, right: 50, bottom: 150, left: 50 };
-    const width = Math.max(300, Math.min(containerWidth - 40, 800));
-    const height = Math.max(300, Math.min(containerHeight - 40, 500));
-
-    const svg = d3.select('#container1')
-        .append('svg')
-        .attr('width', width)
-        .attr('height', height)
-        .style('display', 'block')
-        .style('margin', 'auto');
-
-    const loading = svg.append('text')
-        .attr('x', width / 2)
-        .attr('y', height / 2)
-        .attr('text-anchor', 'middle')
-        .text('Loading data...');
-
-    loadData().then(data => {
         loading.remove();
-
-        // Sanity check
-        console.log(JSON.stringify(data, null, 2));
-
-        // Extract classes and values from the last frame for scaling
-        const lastFrame = data[data.length - 1];
-        const classes = Object.keys(lastFrame.classes);
-        const values = Object.values(lastFrame.classes);
-
-        // round to nearest 10 from max Y value
-        const maxY = Math.ceil (Math.max(...values)/10) * 10;
-
-        // Create x and y scales
+        
+        // Get unique classes
+        const classes = Array.from(new Set(Object.keys(currentData[0].classes)));
+        
+        // Create scales
         const xScale = d3.scaleBand()
             .domain(classes)
             .range([margin.left, width - margin.right])
             .padding(0.1);
-
+            
         const yScale = d3.scaleLinear()
-            .domain([0, maxY])
-            .range([height - margin.bottom - 100, margin.top]);
-
-        // Create axes
-        const xAxis = d3.axisBottom(xScale);
-        const yAxis = d3.axisLeft(yScale)
-            .tickValues(d3.range(0, maxY + 1, 5))  // Show ticks every 2 units
-            .tickFormat(d3.format('d'));  // Format as integers
-
-        // Append axes to the SVG
-        svg.append('g')
-            .attr('transform', `translate(0,${height - margin.bottom - 100})`)
-            .call(xAxis)
-            .selectAll('text')
-            .attr('transform', 'rotate(-45)')
-            .style('text-anchor', 'end')
-            .attr('dx', '-0.5em')
-            .attr('dy', '0.7em');
-
-        svg.append('g')
-            .attr('transform', `translate(${margin.left},0)`)
-            .call(yAxis);
-
-        // Add y-axis label
-        svg.append('text')
-            .attr('transform', 'rotate(-90)')
-            .attr('y', margin.left - 35)
-            .attr('x', -(height/2) + 120)
-            .attr('text-anchor', 'middle')
-            .attr('font-size', '14px')
-            .text('Count');
-
-        // Define colors for each class to match bounding boxes
-        const classColors = {
-            'car': '#2196F3',    // blue
-            'truck': '#4CAF50',  // green
-            'bus': '#FFC107'     // yellow
-        };
-
+            .domain([0, d3.max(currentData, d => d3.max(Object.values(d.classes)))])
+            .nice()
+            .range([height - margin.bottom, margin.top]);
+        
         // Create bars
         svg.selectAll('.bar')
             .data(classes)
@@ -136,69 +108,81 @@ function createVisualization() {
             .append('rect')
             .attr('class', 'bar')
             .attr('x', d => xScale(d))
-            .attr('y', height - margin.bottom - 100)  // Position at x-axis
+            .attr('y', height - margin.bottom)
             .attr('width', xScale.bandwidth())
             .attr('height', 0)
-            .attr('fill', d => classColors[d] || '#808080');  // Use matching colors or gray as fallback
+            .attr('fill', d => classColors[d] || '#808080');
+
+        // Add axes
+        svg.append('g')
+            .attr('transform', `translate(0,${height - margin.bottom})`)
+            .call(d3.axisBottom(xScale));
+            
+        svg.append('g')
+            .attr('transform', `translate(${margin.left},0)`)
+            .call(d3.axisLeft(yScale));
 
         // Get video element and add timeupdate listener
         const video = document.querySelector('video');
         const fps = 25; // video is 25fps
-
+        
         let animationFrameId;
-
+        
         function updateFrame() {
+            if (!currentData) return;
+            
             const currentFrame = Math.floor(video.currentTime * fps);
-            const frameData = data[currentFrame];
-
+            const frameData = currentData[currentFrame] || currentData[0];
+            
             svg.selectAll('.bar')
                 .data(classes)
                 .transition()
-                .duration(40)  // Short duration to keep up with video frame rate
+                .duration(40)
                 .attr('y', d => yScale(frameData.classes[d]))
-                .attr('height', d => (height - margin.bottom - 100) - yScale(frameData.classes[d]));
-
+                .attr('height', d => (height - margin.bottom) - yScale(frameData.classes[d]));
+            
             animationFrameId = requestAnimationFrame(updateFrame);
         }
-
-        // Start animation when video plays
+        
         video.addEventListener('play', () => {
             animationFrameId = requestAnimationFrame(updateFrame);
         });
-
-        // Stop animation when video pauses
+        
         video.addEventListener('pause', () => {
             if (animationFrameId) {
                 cancelAnimationFrame(animationFrameId);
             }
         });
-
-        // Stop animation when video ends
+        
         video.addEventListener('ended', () => {
             if (animationFrameId) {
                 cancelAnimationFrame(animationFrameId);
             }
         });
-
-        // Initial update if video is already playing
+        
         if (!video.paused) {
             animationFrameId = requestAnimationFrame(updateFrame);
         }
-})};
+    }
 
+    // Listen for data file changes
+    document.addEventListener('dataFileChanged', async (event) => {
+        const { dataFile } = event.detail;
+        await loadData(dataFile);
+        createVisualization();
+    });
 
-
-createVisualization();
-
-// Add window resize handler with debounce
-let resizeTimer;
-window.addEventListener('resize', () => {
-  clearTimeout(resizeTimer);
-  resizeTimer = setTimeout(() => {
+    // Initial creation
     createVisualization();
-  }, 250);
-});
 
+    // Add window resize handler with debounce
+    let resizeTimer;
+    window.addEventListener('resize', () => {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(() => {
+            createVisualization();
+        }, 250);
+    });
 })();
 
 

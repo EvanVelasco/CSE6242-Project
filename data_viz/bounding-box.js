@@ -12,10 +12,6 @@ const classColors = {
 
 async function initializeBoundingBoxes(videoContainer) {
     try {
-        // Load the YOLO tracking data
-        const response = await fetch('/content/data/data_1.json');
-        boundingBoxData = await response.json();
-
         // Remove existing SVG if any
         d3.select(videoContainer).select('.bounding-box-overlay').remove();
 
@@ -43,7 +39,7 @@ async function initializeBoundingBoxes(videoContainer) {
             .attr('transform', 'translate(15, 25)');
 
         // Get unique classes from the data
-        const uniqueClasses = [...new Set(boundingBoxData.map(d => d.class))];
+        const uniqueClasses = Object.keys(classColors);
 
         // Create legend items
         uniqueClasses.forEach((className, i) => {
@@ -89,19 +85,43 @@ async function initializeBoundingBoxes(videoContainer) {
     }
 }
 
+// Function to load data from a specific file
+async function loadBoundingBoxData(dataFile) {
+    try {
+        const response = await fetch(dataFile);
+        boundingBoxData = await response.json();
+        // Reset current frame when loading new data
+        currentFrame = 0;
+    } catch (error) {
+        console.error('Error loading bounding box data:', error);
+        boundingBoxData = [];
+    }
+}
+
+// Listen for data file changes
+document.addEventListener('dataFileChanged', async (event) => {
+    const { dataFile } = event.detail;
+    await loadBoundingBoxData(dataFile);
+});
+
 function updateBoundingBoxes(frameNumber) {
-    if (!svg || !boundingBoxData) return;
+    if (!svg || !boundingBoxData || !boundingBoxData.length) return;
 
     currentFrame = frameNumber;
     const frameData = boundingBoxData.filter(d => d.frame === frameNumber);
     
     // Get video dimensions for scaling
     const videoElement = svg.node().parentNode.querySelector('.content-video');
+    if (!videoElement) return;
+
     const videoRect = videoElement.getBoundingClientRect();
     
     // Get the actual video dimensions
     const videoWidth = videoElement.videoWidth;
     const videoHeight = videoElement.videoHeight;
+    
+    // Safety check for valid dimensions
+    if (!videoWidth || !videoHeight || !videoRect.width || !videoRect.height) return;
     
     // Calculate scaling factors
     const scale = Math.min(
@@ -129,10 +149,22 @@ function updateBoundingBoxes(frameNumber) {
     boxes.enter()
         .append('rect')
         .merge(boxes)
-        .attr('x', d => xOffset + (d.bbox[0] / videoWidth) * actualWidth)
-        .attr('y', d => yOffset + (d.bbox[1] / videoHeight) * actualHeight)
-        .attr('width', d => ((d.bbox[2] - d.bbox[0]) / videoWidth) * actualWidth)
-        .attr('height', d => ((d.bbox[3] - d.bbox[1]) / videoHeight) * actualHeight)
+        .attr('x', d => {
+            const x = xOffset + (d.bbox[0] / videoWidth) * actualWidth;
+            return isFinite(x) ? x : 0;
+        })
+        .attr('y', d => {
+            const y = yOffset + (d.bbox[1] / videoHeight) * actualHeight;
+            return isFinite(y) ? y : 0;
+        })
+        .attr('width', d => {
+            const width = ((d.bbox[2] - d.bbox[0]) / videoWidth) * actualWidth;
+            return isFinite(width) && width > 0 ? width : 0;
+        })
+        .attr('height', d => {
+            const height = ((d.bbox[3] - d.bbox[1]) / videoHeight) * actualHeight;
+            return isFinite(height) && height > 0 ? height : 0;
+        })
         .attr('class', 'bounding-box')
         .style('fill', 'none')
         .style('stroke', d => classColors[d.class] || '#808080')
@@ -149,8 +181,14 @@ function updateBoundingBoxes(frameNumber) {
     labels.enter()
         .append('text')
         .merge(labels)
-        .attr('x', d => xOffset + (d.bbox[0] / videoWidth) * actualWidth)
-        .attr('y', d => yOffset + (d.bbox[1] / videoHeight) * actualHeight - 5)
+        .attr('x', d => {
+            const x = xOffset + (d.bbox[0] / videoWidth) * actualWidth;
+            return isFinite(x) ? x : 0;
+        })
+        .attr('y', d => {
+            const y = yOffset + (d.bbox[1] / videoHeight) * actualHeight - 5;
+            return isFinite(y) ? y : 0;
+        })
         .text(d => `${d.class} ${d.id} (${Math.round(d.confidence * 100)}%)`)
         .attr('class', 'bounding-box-label')
         .style('fill', d => classColors[d.class] || '#808080')
