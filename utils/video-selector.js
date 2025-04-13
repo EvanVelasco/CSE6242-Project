@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Show default video selection
     videoItems.forEach(item => {
-        if (item.getAttribute('data-video') === 'content/videos/yolo_output_11m_ver2.mp4') {
+        if (item.getAttribute('data-video') === 'content/videos/video_1.mp4') {
             item.classList.add('active');
             videoTitle.textContent = item.textContent;
         } else {
