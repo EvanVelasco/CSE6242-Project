@@ -6,7 +6,6 @@ A web-based visualization project for traffic detection using YOLO (You Only Loo
 
 This project demonstrates traffic detection and analysis using YOLO object detection, with interactive visualizations built using D3.js. The system processes video footage and displays real-time detection results alongside analytical charts.
 
-
 ## Project Structure
 
 ```
@@ -16,14 +15,15 @@ CSE6242-Project/
 ├── style.css                       # Styling for web interface
 ├── content/                        # Media content directory
 │   ├── videos/                     # Video files directory
-│   │   └── yolo_output_11m_ver2.mp4  # Processed video with detections
-│   └── yolo_output_tracking_11m_ver2.json  # YOLO tracking data
+│   │   └── ...                     # Processed video with detections
+│   ├── data/                       # Data files directory
+│   │   └── ...                     # Processed video with detections
 ├── data_viz/                       # Visualization scripts directory
-│   ├── bounding-box.js            # Real-time object detection overlay
-│   ├── container1.js              # Vehicle count by class visualization
-│   └── container2.js              # Vehicle count over time visualization
+│   ├── bounding-box.js             # Real-time object detection overlay
+│   ├── container1.js               # Vehicle count by class visualization
+│   └── container2.js               # Vehicle count over time visualization
 ├── utils/                          # Utility scripts
-│   └── video-selector.js          # Video selection handling
+│   └── video-selector.js           # Video selection handling
 └── README.md                       # Project documentation
 ```
 
@@ -36,12 +36,12 @@ CSE6242-Project/
    - Smooth tracking with requestAnimationFrame
 
 2. **Vehicle Count by Class**
-   - Bar chart showing current frame vehicle counts
+   - Bar chart showing vehicle counts
    - Categorized by vehicle type
    - Updates in real-time with video playback
 
 3. **Total Vehicle Count**
-   - Line chart showing total vehicles over time
+   - Line chart showing total vehicles by frame
    - Tracks frame-by-frame changes
    - Provides temporal analysis of traffic flow
 

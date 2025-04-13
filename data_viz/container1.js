@@ -118,9 +118,19 @@
             .attr('transform', `translate(0,${height - margin.bottom})`)
             .call(d3.axisBottom(xScale));
             
-        svg.append('g')
+        const yAxisLine = svg.append('g')
             .attr('transform', `translate(${margin.left},0)`)
             .call(d3.axisLeft(yScale));
+
+        // Add y-axis label
+        yAxisLine.append('text')
+            .attr('transform', 'rotate(-90)')
+            .attr('y', -35)
+            .attr('x', -(height - margin.bottom + margin.top) / 2)
+            .attr('fill', 'black')
+            .attr('font-size', '14px')
+            .attr('text-anchor', 'middle')
+            .text('Count');
 
         // Get video element and add timeupdate listener
         const video = document.querySelector('video');
