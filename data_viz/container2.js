@@ -59,7 +59,7 @@ function createVisualization() {
     .text('Loading data...');
 
   // Load and process data
-  d3.json('content/data/yolo_output_tracking_11m_ver2.json')
+  d3.json('content/data/data_1.json')
     .then(data => {
       loading.remove();
       

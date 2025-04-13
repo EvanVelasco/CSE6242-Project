@@ -1,6 +1,6 @@
 (function(){
     function loadData() {
-    return d3.json('content/data/yolo_output_tracking_11m_ver2.json')
+    return d3.json('content/data/data_1.json')
         .then(data => {
             function accumulateIds(data) {
                 const seenClasses = {};
@@ -122,7 +122,12 @@ function createVisualization() {
             .attr('font-size', '14px')
             .text('Count');
 
-        
+        // Define colors for each class to match bounding boxes
+        const classColors = {
+            'car': '#2196F3',    // blue
+            'truck': '#4CAF50',  // green
+            'bus': '#FFC107'     // yellow
+        };
 
         // Create bars
         svg.selectAll('.bar')
@@ -134,7 +139,7 @@ function createVisualization() {
             .attr('y', height - margin.bottom - 100)  // Position at x-axis
             .attr('width', xScale.bandwidth())
             .attr('height', 0)
-            .attr('fill', '#6E260E');
+            .attr('fill', d => classColors[d] || '#808080');  // Use matching colors or gray as fallback
 
         // Get video element and add timeupdate listener
         const video = document.querySelector('video');

@@ -13,7 +13,7 @@ const classColors = {
 async function initializeBoundingBoxes(videoContainer) {
     try {
         // Load the YOLO tracking data
-        const response = await fetch('/content/data/yolo_output_tracking_11m_ver2.json');
+        const response = await fetch('/content/data/data_1.json');
         boundingBoxData = await response.json();
 
         // Remove existing SVG if any
