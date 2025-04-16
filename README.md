@@ -11,7 +11,6 @@ This project demonstrates traffic detection and analysis using YOLO object detec
 ```
 CSE6242-Project/
 ├── index.html                      # Main web interface
-├── about.html                      # About page
 ├── style.css                       # Styling for web interface
 ├── content/                        # Media content directory
 │   ├── videos/                     # Video files directory
