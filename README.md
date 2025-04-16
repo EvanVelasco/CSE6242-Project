@@ -51,3 +51,5 @@ CSE6242-Project/
 - ByteTrack for object association
 - HTML5 video for playback
 - Responsive CSS for layout
+
+  
