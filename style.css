@@ -97,6 +97,7 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
+    position: relative;
 }
 
 .right-section {
@@ -162,6 +163,12 @@ p {
     object-fit: contain;
 }
 
+/* Hide fullscreen button */
+.content-video::-webkit-media-controls-fullscreen-button {
+    display: none !important;
+}
+
+
 .chart-container {
     flex: 1;
     width: 100%;
@@ -175,4 +182,22 @@ p {
     left: 0;
     width: 100%;
     height: 100%;
+}
+
+.bounding-box-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    pointer-events: none !important;
+    z-index: 10;
+}
+
+.bounding-box-overlay * {
+    pointer-events: none !important;
+}
+
+.bounding-box-label {
+    font-size: 12px;
+    font-weight: bold;
+    text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.7);
 }
