@@ -48,5 +48,6 @@ CSE6242-Project/
 
 - D3.js for data visualization
 - YOLO v11 for object detection
+- ByteTrack for object association
 - HTML5 video for playback
 - Responsive CSS for layout
