@@ -47,6 +47,6 @@ CSE6242-Project/
 ## Technologies Used
 
 - D3.js for data visualization
-- YOLO v8 for object detection
+- YOLO v11 for object detection
 - HTML5 video for playback
 - Responsive CSS for layout
