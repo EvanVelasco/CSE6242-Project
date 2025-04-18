@@ -21,6 +21,8 @@ CSE6242-Project/
 │   ├── bounding-box.js             # Real-time object detection overlay
 │   ├── container1.js               # Vehicle count by class visualization
 │   └── container2.js               # Vehicle count over time visualization
+├── model/                          # Python model directory
+└── ...                             # Python files used to train the model and produce json output
 ├── utils/                          # Utility scripts
 │   └── video-selector.js           # Video selection handling
 └── README.md                       # Project documentation
