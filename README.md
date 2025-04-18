@@ -34,24 +34,20 @@ CSE6242-Project/
    - Real-time bounding box visualization
    - Color-coded by vehicle class
    - Shows confidence scores and tracking IDs
-   - Smooth tracking with requestAnimationFrame
 
 2. **Vehicle Count by Class**
-   - Bar chart showing vehicle counts
+   - Bar chart showing detected vehicle counts
    - Categorized by vehicle type
-   - Updates in real-time with video playback
+   - Allows for analysis of class distribution
 
 3. **Total Vehicle Count**
    - Line chart showing total vehicles by frame
-   - Tracks frame-by-frame changes
-   - Provides temporal analysis of traffic flow
+   - Provides analysis of traffic flow
 
 ## Technologies Used
 
+- HTML & CSS for webpage and styling
 - D3.js for data visualization
 - YOLO v11 for object detection
 - ByteTrack for object association
-- HTML5 video for playback
-- Responsive CSS for layout
-
   

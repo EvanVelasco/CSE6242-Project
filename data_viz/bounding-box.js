@@ -1,4 +1,3 @@
-// D3.js code for bounding box visualization
 let boundingBoxData = [];
 let svg = null;
 let currentFrame = 0;
