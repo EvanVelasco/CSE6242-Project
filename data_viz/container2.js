@@ -92,8 +92,7 @@
       .range([margin.left, width - margin.right]);
       
     const yScale = d3.scaleLinear()
-      .domain([0, d3.max(processedData, d => d.count)])
-      .nice()
+    .domain([0, Math.ceil(d3.max(processedData, d => d.count) / 5) * 5])
       .range([height - margin.bottom, margin.top]);
     
     // Create line
@@ -151,7 +150,7 @@
       .call(d3.axisLeft(yScale)
         .ticks(height > 300 ? 8 : 5)
         .tickFormat(d3.format('d'))
-        .tickValues(d3.range(0, Math.ceil(d3.max(processedData, d => d.count)) + 1)));
+        .tickValues(d3.range(0, Math.ceil(d3.max(processedData, d => d.count)) + 5, 5)));
         
     yAxisLine.append('text')
       .attr('transform', 'rotate(-90)')
