@@ -30,17 +30,17 @@ Videos should use standard web browser formats. If your video is not playing, yo
 
 Each JSON file should contain an array of objects with the following structure:
 
-```json
+```
 {
-  "frame": 10,          // Frame number
-  "id": 1,              // Vehicle ID
-  "class": "car",       // Vehicle class
-  "confidence": 0.95,   // Detection confidence (0-1)
-  "bbox": [             // Bounding box coordinates
-    100,                  // Left
-    150,                  // Top
-    200,                  // Right
-    250                   // Bottom
+  "frame": number,          // Frame number
+  "id": number,             // Vehicle ID
+  "class": string,          // Vehicle class
+  "confidence": float,      // Confidence Score
+  "bbox": [                 // Bounding box coordinates
+    number,                  // Left
+    number,                  // Top
+    number,                  // Right
+    number                   // Bottom
   ]
 }
 ```
