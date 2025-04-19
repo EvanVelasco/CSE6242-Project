@@ -32,15 +32,15 @@ Each JSON file should contain an array of objects with the following structure:
 
 ```json
 {
-  "frame": number,      // Frame number
-  "id": number,         // Vehicle ID
-  "class": string,      // Vehicle class
-  "confidence": float,  // Detection confidence (0-1)
-  "bbox": [             // Bounding box coordinates
-    x1,                   // Left
-    y1,                   // Top
-    x2,                   // Right
-    y2                    // Bottom
+  "frame": number,      # Frame number
+  "id": number,         # Vehicle ID
+  "class": string,      # Vehicle class
+  "confidence": float,  # Detection confidence (0-1)
+  "bbox": [             # Bounding box coordinates
+    x1,                   # Left
+    y1,                   # Top
+    x2,                   # Right
+    y2                    # Bottom
   ]
 }
 ```
