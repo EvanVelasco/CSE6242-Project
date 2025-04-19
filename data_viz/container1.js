@@ -59,14 +59,14 @@ import { classColors } from '../utils/set-class-colors.js';
         const containerWidth = container.clientWidth;
         const containerHeight = container.clientHeight;
         
-        const margin = {top: 40, right: 50, bottom: 80, left: 50};
-        const width = Math.max(300, Math.min(containerWidth - 40, 800));
-        const height = Math.max(300, Math.min(containerHeight - 40, 500));
+        const margin = {top: 20, right: 20, bottom: 60, left: 60};
+        const width = containerWidth - margin.left - margin.right;
+        const height = containerHeight - margin.top - margin.bottom;
         
         const svg = d3.select('#container1')
             .append('svg')
-            .attr('width', width)
-            .attr('height', height)
+            .attr('width', width + margin.left + margin.right)
+            .attr('height', height + margin.top + margin.bottom)
             .style('display', 'block')
             .style('margin', 'auto');
             
@@ -112,7 +112,14 @@ import { classColors } from '../utils/set-class-colors.js';
         // Add axes
         svg.append('g')
             .attr('transform', `translate(0,${height - margin.bottom})`)
-            .call(d3.axisBottom(xScale));
+            .call(d3.axisBottom(xScale))
+            .append('text')
+            .attr('x', width / 2)
+            .attr('y', 35)
+            .attr('fill', 'black')
+            .attr('font-size', '14px')
+            .attr('text-anchor', 'middle')
+            .text('Vehicle Class');
             
         const yAxisLine = svg.append('g')
             .attr('transform', `translate(${margin.left},0)`)

@@ -14,17 +14,16 @@
     const containerHeight = container.clientHeight;
     
     // Set dimensions
-    const margin = {top: 40, right: 50, bottom: 80, left: 50};
-    const width = Math.max(300, Math.min(containerWidth - 40, 800));
-    const height = Math.max(300, Math.min(containerHeight - 40, 500));
+    const margin = {top: 20, right: 20, bottom: 60, left: 60};
+    const width = containerWidth - margin.left - margin.right;
+    const height = containerHeight - margin.top - margin.bottom;
     
     // Create SVG
     const svg = d3.select('#container2')
       .append('svg')
       .attr('width', width)
       .attr('height', height)
-      .style('display', 'block')
-      .style('margin', 'auto');
+      .style('display', 'block');
 
     // Remove old frame display if it exists
     if (frameDisplay) {
