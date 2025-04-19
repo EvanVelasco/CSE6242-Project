@@ -1,11 +1,7 @@
-(function(){
-    // Define colors for each class (matching bounding-box.js)
-    const classColors = {
-        'car': '#2196F3',    // blue
-        'truck': '#4CAF50',  // green
-        'bus': '#FFC107',    // yellow
-    };
+// import class colors
+import { classColors } from '../utils/set-class-colors.js';
 
+(function(){
     let currentData = null;
 
     function loadData(dataFile) {

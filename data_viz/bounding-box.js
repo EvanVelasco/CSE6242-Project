@@ -1,13 +1,9 @@
+// import class colors
+import { classColors } from '../utils/set-class-colors.js';
+
 let boundingBoxData = [];
 let svg = null;
 let currentFrame = 0;
-
-// Define colors for each class
-const classColors = {
-    'car': '#2196F3',    // blue
-    'truck': '#4CAF50',  // green
-    'bus': '#FFC107',    // yellow
-};
 
 async function initializeBoundingBoxes(videoContainer) {
     try {
