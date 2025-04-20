@@ -34,7 +34,7 @@ def main():
     print(torch.cuda.is_available())
     print(torch.cuda.get_device_name(0))
 
-    os.chdir('E:/GradSchool/CSE6242_DVA/Proj')
+    os.chdir('PATH/Proj')
     # Load YOLO model (use pre-trained weights, e.g., yolov8n.pt or yolov11.pt if available)
     
     #model = YOLO('runs/detect/train13/weights/last.pt')  # use 'last.pt' to resume
@@ -44,8 +44,8 @@ def main():
     model = YOLO('yolo11m.pt')  # Replace with yolov11 weights if you have them
     # Train on your custom dataset
     model.train(
-        #data='E:/GradSchool/CSE6242_DVA/Proj/combined_data/data_1.yaml',  # Your YAML file
-        data='E:/GradSchool/CSE6242_DVA/Proj/batch_1/data.yaml',  # Your YAML file
+        #data='PATH/Proj/combined_data/data_1.yaml',  # Your YAML file
+        data='PATH/Proj/batch_1/data.yaml',  # Your YAML file
         epochs=10,
         imgsz=640,
         batch=16,
@@ -60,7 +60,7 @@ def main():
 
     model = YOLO('runs/detect/train13/weights/last.pt')
     model.train(
-        data='E:/GradSchool/CSE6242_DVA/Proj/combined_data/data_1.yaml',
+        data='PATH/Proj/combined_data/data_1.yaml',
         resume=True, #on if retrain
         device=0
         )
