@@ -4,11 +4,12 @@ import torch
 import json
 from ultralytics import YOLO
 import time
+import sys
 
 '''
 Folder Path
 Proj folder
-    - Proj
+    - Proj << this is where entire python code goes in
         - data
             -train
                 -images
@@ -16,10 +17,7 @@ Proj folder
             -valid
                 -images
                 -labels
-        - runs
-            -detect
-                -trained folder in various names
-                ...
+        - best.pt
         - Video data
             - video 1
             - video 2
@@ -28,11 +26,14 @@ Proj folder
 '''
 
 # CONFIG
-os.chdir('PATH/Proj') #update the path if needed
+
+script_directory = os.path.dirname(os.path.abspath(sys.argv[0]))
+os.chdir(f'{script_directory}/Proj') #update the path if needed
 input_path = 'video_data/Video 1.mp4'
 
 model_selection = "11 Small" #11n, 11m
 
+'''
 if model_selection == "11n":
     #11 Nano 30 epoch
     model_path = 'runs/detect/train8-11n/weights/best.pt'
@@ -66,12 +67,16 @@ elif model_selection == "custom":
 elif model_selection == "11s":
     # 11 Medium
     output_path = 'video_output/yolo_output_Small.mp4'
-    model_path = 'runs/detect/Alex/best.pt'
+    model_path = 'best.pt'
     json_output_path = 'video_data/yolo_output_tracking_Small.json'
 
 else:
     print ("model selection error")
-    
+'''
+output_path = 'video_output/yolo_output_Small.mp4'
+model_path = 'runs/best.pt'
+json_output_path = 'video_data/yolo_output_tracking_Small.json'
+
 
 # Load YOLO model 
 model = YOLO(model_path)
