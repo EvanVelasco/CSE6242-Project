@@ -52,36 +52,26 @@ import { classColors } from '../utils/set-class-colors.js';
             });
     }
 
+    // Create visualization function
     function createVisualization() {
+        // Remove existing svg
         d3.select('#container1 svg').remove();
         
+        // Get container dimensions
         const container = document.getElementById('container1');
         const containerWidth = container.clientWidth;
         const containerHeight = container.clientHeight;
         
+        // Set margins along with width and height
         const margin = {top: 20, right: 20, bottom: 60, left: 60};
         const width = containerWidth - margin.left - margin.right;
         const height = containerHeight - margin.top - margin.bottom;
         
+        // Create svg
         const svg = d3.select('#container1')
             .append('svg')
             .attr('width', width + margin.left + margin.right)
             .attr('height', height + margin.top + margin.bottom)
-            .style('display', 'block')
-            .style('margin', 'auto');
-            
-        const loading = svg.append('text')
-            .attr('x', width / 2)
-            .attr('y', height / 2)
-            .attr('text-anchor', 'middle')
-            .text('Loading data...');
-
-        if (!currentData) {
-            loading.text('No data available');
-            return;
-        }
-
-        loading.remove();
         
         // Get unique classes
         const classes = Array.from(new Set(Object.keys(currentData[0].classes)));
@@ -97,7 +87,7 @@ import { classColors } from '../utils/set-class-colors.js';
             .nice()
             .range([height - margin.bottom, margin.top]);
         
-        // Create bars
+        // Create bars for bar chart
         svg.selectAll('.bar')
             .data(classes)
             .enter()
@@ -107,7 +97,7 @@ import { classColors } from '../utils/set-class-colors.js';
             .attr('y', height - margin.bottom)
             .attr('width', xScale.bandwidth())
             .attr('height', 0)
-            .attr('fill', d => classColors[d] || '#808080');
+            .attr('fill', d => classColors[d]);
 
         // Add axes
         svg.append('g')
@@ -137,7 +127,8 @@ import { classColors } from '../utils/set-class-colors.js';
 
         // Get video element and add timeupdate listener
         const video = document.querySelector('video');
-        const fps = 25; // video is 25fps
+        // video is 25fps. Note that this is hardcoded and any new videos must be 25fps
+        const fps = 25; 
         
         let animationFrameId;
         
@@ -150,7 +141,7 @@ import { classColors } from '../utils/set-class-colors.js';
             svg.selectAll('.bar')
                 .data(classes)
                 .transition()
-                .duration(40)
+                .duration(40) // 40ms is the duration of a frame at 25fps
                 .attr('y', d => yScale(frameData.classes[d]))
                 .attr('height', d => (height - margin.bottom) - yScale(frameData.classes[d]));
             
