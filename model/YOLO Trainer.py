@@ -5,6 +5,28 @@ os.environ["CUDA_LAUNCH_BLOCKING"] = "1"
 from ultralytics import YOLO
 import torch
 
+'''
+Folder Path
+Proj folder
+    - Proj
+        - data
+            -train
+                -images
+                -labels
+            -valid
+                -images
+                -labels
+        - runs
+            -detect
+                -trained folder in various names
+                ...
+        - Video data
+            - video 1
+            - video 2
+            ...
+        - Video Output
+'''
+
 
 def main():
     print(torch.__version__)
