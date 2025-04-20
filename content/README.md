@@ -23,7 +23,7 @@ All new content must include both a video file and a json file. To add a new vid
 
 ## Video Format
 
-Videos should use standard web browser formats. If your video is not playing, you may need to convert it to a compatible format. For more information about video conversion, visit [ffmpeg.org](https://ffmpeg.org/).
+Videos should use standard web browser formats and be set to 25 fps. If your video is not playing, you may need to convert it to a compatible format. For more information about video conversion, visit [ffmpeg.org](https://ffmpeg.org/).
 
 
 ## JSON Data Format

@@ -91,7 +91,7 @@
       .range([margin.left, width - margin.right]);
       
     const yScale = d3.scaleLinear()
-    .domain([0, Math.ceil(d3.max(processedData, d => d.count) / 5) * 5])
+      .domain([0, Math.ceil(d3.max(processedData, d => d.count) / 5) * 5])
       .range([height - margin.bottom, margin.top]);
     
     // Create line
@@ -116,7 +116,7 @@
       .datum(processedData)
       .attr('fill', 'none')
       .attr('stroke', '#6E260E')
-      .attr('stroke-width', 3)
+      .attr('stroke-width', 2)
       .attr('d', line)
       .attr('clip-path', 'url(#clip-path)');
 
@@ -166,9 +166,6 @@
     
     function updateFrame() {
       const currentFrame = Math.floor(video.currentTime * fps);
-      
-      // Update frame counter display
-      frameDisplay.text(`Frame: ${currentFrame}`);
       
       // Find the nearest data points
       const dataIndex = processedData.findIndex(d => d.frame >= currentFrame);

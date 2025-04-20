@@ -7,7 +7,7 @@ let currentFrame = 0;
 
 async function initializeBoundingBoxes(videoContainer) {
     try {
-        // Remove existing SVG if any
+        // Remove existing SVG
         d3.select(videoContainer).select('.bounding-box-overlay').remove();
 
         // Get video element dimensions
@@ -15,6 +15,7 @@ async function initializeBoundingBoxes(videoContainer) {
         const videoRect = videoElement.getBoundingClientRect();
 
         // Create SVG overlay with the same dimensions as the video
+        // Note: this paints the bounding boxes on top of the video and will interfer with click events
         svg = d3.select(videoContainer)
             .append('svg')
             .attr('class', 'bounding-box-overlay')
@@ -45,7 +46,7 @@ async function initializeBoundingBoxes(videoContainer) {
             legendItem.append('rect')
                 .attr('width', 15)
                 .attr('height', 15)
-                .attr('fill', classColors[className] || '#808080');
+                .attr('fill', classColors[className]);
 
             // Add class name
             legendItem.append('text')
@@ -53,7 +54,6 @@ async function initializeBoundingBoxes(videoContainer) {
                 .attr('y', 12)
                 .style('font-size', '14px')
                 .style('fill', 'white')
-                .style('text-shadow', '1px 1px 1px rgba(0, 0, 0, 0.7)')
                 .text(className);
         });
 
@@ -80,7 +80,7 @@ async function initializeBoundingBoxes(videoContainer) {
     }
 }
 
-// Function to load data from a specific file
+// Function to load json data from whatever file is currently selected
 async function loadBoundingBoxData(dataFile) {
     try {
         const response = await fetch(dataFile);
@@ -93,7 +93,7 @@ async function loadBoundingBoxData(dataFile) {
     }
 }
 
-// Listen for data file changes
+// Check when the data file changes
 document.addEventListener('dataFileChanged', async (event) => {
     const { dataFile } = event.detail;
     await loadBoundingBoxData(dataFile);
@@ -162,7 +162,7 @@ function updateBoundingBoxes(frameNumber) {
         })
         .attr('class', 'bounding-box')
         .style('fill', 'none')
-        .style('stroke', d => classColors[d.class] || '#808080')
+        .style('stroke', d => classColors[d.class])
         .style('stroke-width', '2px')
         .style('opacity', d => Math.min(1, d.confidence + 0.3));
 
@@ -186,7 +186,7 @@ function updateBoundingBoxes(frameNumber) {
         })
         .text(d => `${d.class} ${d.id} (${Math.round(d.confidence * 100)}%)`)
         .attr('class', 'bounding-box-label')
-        .style('fill', d => classColors[d.class] || '#808080')
+        .style('fill', d => classColors[d.class])
         .style('font-size', '18px')
         .style('font-weight', 'bold');
 }
