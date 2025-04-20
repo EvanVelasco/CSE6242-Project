@@ -9,8 +9,27 @@ import json
 from torchvision import transforms as T
 from torchvision.ops import box_iou
 
+'''
+Folder Path
+Proj folder
+    - Proj
+        - data
+            -train
+                -images
+                -labels
+            -valid
+                -images
+                -labels
+        - Video data
+            - video 1
+            - video 2
+            ...
+        - Video Output
+'''
+
+
 # ======================= Set working directory 
-os.chdir('E:/GradSchool/CSE6242_DVA/Proj')
+os.chdir('PATH/Proj') #This is local path to local path
 
 # ============================= CONFIG 
 image_dir = 'combined_data/train/images'
