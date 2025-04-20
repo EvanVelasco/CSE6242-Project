@@ -20,6 +20,10 @@ Proj folder
             -valid
                 -images
                 -labels
+        - runs
+            -detect
+                -trained folder in various names
+                ...
         - Video data
             - video 1
             - video 2
