@@ -16,6 +16,10 @@ Proj folder
             -valid
                 -images
                 -labels
+        - runs
+            -detect
+                -trained folder in various names
+                ...
         - Video data
             - video 1
             - video 2
@@ -55,15 +59,15 @@ elif model_selection == "stdm":
 
 elif model_selection == "custom":
     # 11 Medium 
-    output_path = 'video_data/yolo_output_11n_10epch.mp4'
+    output_path = 'video_output/yolo_output_11n_10epch.mp4'
     model_path = 'runs/detect/OneDrive_2025-04-15/yolo_output 11n 10E, 16/weights/best.pt'
     json_output_path = 'video_data/yolo_output_tracking_11n_10epch.json'
 
-elif model_selection == "11 Small":
+elif model_selection == "11s":
     # 11 Medium
-    output_path = 'video_data/yolo_output_Alex.mp4'
+    output_path = 'video_output/yolo_output_Small.mp4'
     model_path = 'runs/detect/Alex/best.pt'
-    json_output_path = 'video_data/yolo_output_tracking_Alex.json'
+    json_output_path = 'video_data/yolo_output_tracking_Small.json'
 
 else:
     print ("model selection error")
