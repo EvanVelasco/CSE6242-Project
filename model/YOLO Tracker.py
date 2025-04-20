@@ -5,43 +5,61 @@ import json
 from ultralytics import YOLO
 import time
 
+'''
+Folder Path
+Proj folder
+    - Proj
+        - data
+            -train
+                -images
+                -labels
+            -valid
+                -images
+                -labels
+        - Video data
+            - video 1
+            - video 2
+            ...
+        - Video Output
+'''
+
 # CONFIG
-os.chdir('E:/GradSchool/CSE6242_DVA/Proj')
+os.chdir('PATH/Proj') #update the path if needed
 input_path = 'video_data/Video 1.mp4'
 
-model_selection = "Alex" #11n, 11m
+model_selection = "11 Small" #11n, 11m
 
 if model_selection == "11n":
-    #11 Nano
+    #11 Nano 30 epoch
     model_path = 'runs/detect/train8-11n/weights/best.pt'
-    output_path = 'video_data/yolo_output_11n.mp4'
+    output_path = 'video_output/yolo_output_11n.mp4'
     json_output_path = 'video_data/yolo_output_tracking_11n.json'
 
 elif model_selection == "11m":
-    # 11 Medium
-    output_path = 'video_data/yolo_output_11m_video6.mp4'
+    # 11 Medium 30 epoch
+    output_path = 'video_output/yolo_output_11m_video6.mp4'
     model_path = 'runs/detect/train13-11m/weights/best.pt'
     json_output_path = 'video_data/yolo_output_tracking_11m_video6.json'
 
 elif model_selection == "11n10g":
-    # 11 Medium
-    output_path = 'video_data/yolo_output_11n10g1.mp4'
+    # 11 Nano 10 Epoch
+    output_path = 'video_output/yolo_output_11n10g1.mp4'
     model_path = 'runs/detect/train3-11n10g/weights/best.pt'
     json_output_path = 'video_data/yolo_output_tracking_11n10g1.json'
 
 elif model_selection == "stdm":
-    # 11 Medium
+    # Standard YOLO
     output_path = 'video_data/yolo_output_std11m.mp4'
     model_path = 'yolo11m.pt'
     json_output_path = 'video_data/yolo_output_tracking_std11m.json'
 
 elif model_selection == "custom":
-    # 11 Medium
+    # 11 Medium 
     output_path = 'video_data/yolo_output_11n_10epch.mp4'
     model_path = 'runs/detect/OneDrive_2025-04-15/yolo_output 11n 10E, 16/weights/best.pt'
     json_output_path = 'video_data/yolo_output_tracking_11n_10epch.json'
 
-elif model_selection == "Alex":
+elif model_selection == "11 Small":
     # 11 Medium
     output_path = 'video_data/yolo_output_Alex.mp4'
     model_path = 'runs/detect/Alex/best.pt'
