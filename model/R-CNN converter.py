@@ -2,6 +2,28 @@ import os
 import json
 from tqdm import tqdm
 
+'''
+Folder Path
+Proj folder
+    - Proj
+        - data
+            -train
+                -images
+                -labels
+            -valid
+                -images
+                -labels
+        - runs
+            -detect
+                -trained folder in various names
+                ...
+        - Video data
+            - video 1
+            - video 2
+            ...
+        - Video Output
+'''
+
 # CONFIGURATION 
 os.chdir('E:/GradSchool/CSE6242_DVA/Proj')
 yolo_dataset_path = 'combined_data/train'  
