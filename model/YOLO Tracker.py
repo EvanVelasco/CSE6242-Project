@@ -34,6 +34,7 @@ input_path = 'video_data/Video 1.mp4'
 model_selection = "11 Small" #11n, 11m
 
 '''
+#old code
 if model_selection == "11n":
     #11 Nano 30 epoch
     model_path = 'runs/detect/train8-11n/weights/best.pt'
