@@ -44,14 +44,14 @@
         
         <!-- right section -->
         <div class="right-section">
-            <!-- right container 1 -->
+            <!-- right container 1 (top) -->
             <div class="right-container right-container-1" id="container1">
                 <h2>Count of detected vehicles by class</h2>
                 <p>Bar Chart</p>
                 <div class="chart-container"></div>
                 <script type="module" src="data_viz/container1.js"></script>
             </div>
-            <!-- right container 2 -->
+            <!-- right container 2 (bottom)-->
             <div class="right-container right-container-2" id="container2">
                 <h2>Count of detected vehicles by video frame</h2>
                 <p>Line Chart</p>
@@ -61,6 +61,7 @@
         </div>
     </div>
 
+    <!-- bounding box visualization -->
     <script type="module">
         import { initializeBoundingBoxes, updateBoundingBoxes } from './data_viz/bounding-box.js';
 
@@ -107,11 +108,10 @@
             const videoItems = document.querySelectorAll('.video-item');
             videoItems.forEach(item => {
                 item.addEventListener('click', async function() {
-                    // Cancel any existing animation
                     if (animationFrameId) {
                         cancelAnimationFrame(animationFrameId);
                     }
-                    // Re-initialize bounding boxes when video source changes
+                    
                     await initializeBoundingBoxes(videoContainer);
                 });
             });
