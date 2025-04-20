@@ -54,6 +54,7 @@ async function initializeBoundingBoxes(videoContainer) {
                 .attr('y', 12)
                 .style('font-size', '14px')
                 .style('fill', 'white')
+                .style('text-shadow', '1px 1px 1px rgba(0, 0, 0, 0.7)')
                 .text(className);
         });
 
