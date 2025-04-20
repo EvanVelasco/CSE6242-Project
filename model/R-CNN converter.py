@@ -25,7 +25,7 @@ Proj folder
 '''
 
 # CONFIGURATION 
-os.chdir('E:/GradSchool/CSE6242_DVA/Proj')
+os.chdir('PATH/Proj')
 yolo_dataset_path = 'combined_data/train'  
 #yolo_dataset_path = 'combined_data/valid' 
 image_dir = os.path.join(yolo_dataset_path, 'images')
