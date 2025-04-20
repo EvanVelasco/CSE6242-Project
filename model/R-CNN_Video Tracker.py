@@ -6,6 +6,28 @@ from torchvision.models.detection.faster_rcnn import FastRCNNPredictor
 from torchvision import transforms as T
 import time
 
+'''
+Folder Path
+Proj folder
+    - Proj
+        - data
+            -train
+                -images
+                -labels
+            -valid
+                -images
+                -labels
+        - runs
+            -detect
+                -trained folder in various names
+                ...
+        - Video data
+            - video 1
+            - video 2
+            ...
+        - Video Output
+'''
+
 # ================== CONFIG ===
 os.chdir('E:/GradSchool/CSE6242_DVA/Proj')
 input_path = 'video_data/Video 1.mp4'
