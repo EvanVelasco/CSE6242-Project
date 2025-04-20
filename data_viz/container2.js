@@ -166,6 +166,9 @@
     
     function updateFrame() {
       const currentFrame = Math.floor(video.currentTime * fps);
+
+      // Update frame counter display. This is displayed in the top right of the video
+      frameDisplay.text(`Frame: ${currentFrame}`);
       
       // Find the nearest data points
       const dataIndex = processedData.findIndex(d => d.frame >= currentFrame);
