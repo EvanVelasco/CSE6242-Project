@@ -9,7 +9,7 @@ This project demonstrates traffic detection and analysis using YOLO object detec
 ## Project Structure
 
 ```
-CSE6242-Project/
+YOLO-Traffic-Detection/
 ├── index.html                      # Main web interface
 ├── style.css                       # Styling for web interface
 ├── content/                        # Media content directory
